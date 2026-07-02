@@ -2,70 +2,135 @@
 
 // constante dos pinos dos leds
 #define REDpin 2
-#define YELLOWpin 3
+#define YELLOWpin 5
 #define BLUEpin 4
-#define GREENpin 5
+#define GREENpin 3
+#define BUTTONaction 8
+#define Buzzer 6
+//constante do Input dos Botoes
 
 // usando lista simplesmente encadeada como modelo para armazenamento dos rounds do jogo da memória
-typedef struct Round {
-  int data;
-  struct Round *next;
-
-} Round;
 
 
 class Game {
   private:
-    Round *current =(Round*)malloc(sizeof(Round));
+    int round[100];
+    int tam = 0;
   public:
     Game(){
       int data = random(2,6);
-      this->current->data = data;
-      this->current->next = NULL;
+      round[0] = data;
+      tam++;
 
+    }
+    int verify(){
+      digitalWrite(BUTTONaction,HIGH);
+      pinMode(REDpin,INPUT);
+      pinMode(GREENpin,INPUT);
+      pinMode(BLUEpin,INPUT);
+      pinMode(YELLOWpin,INPUT);
+      
+      int data = -1;
+      for (int x=0;x<tam;x++){
+        data = -1;
+        while (data == -1){
+          if (digitalRead(REDpin) == 1){
+            data = REDpin;
+          }
+          else if (digitalRead(BLUEpin) == 1){
+            data = BLUEpin;
+          }
+          else if (digitalRead(GREENpin) == 1){
+            data = GREENpin;
+          }
+          else if (digitalRead(YELLOWpin) == 1){
+            data = YELLOWpin;
+          }
+          if (data > 0){
+            //digitalWrite(Buzzer,HIGH);
+            while(digitalRead(REDpin)    || 
+                  digitalRead(GREENpin)  ||
+                  digitalRead(YELLOWpin) || 
+                  digitalRead(BLUEpin));
+            delay(50);
+            //digitalWrite(Buzzer,LOW);
+            if (data == round[x]){
+              break;
+            } else {
+              return -1;
+            }
+          }
+        }
+      }
+      digitalWrite(BUTTONaction,LOW);
+      return 0;
     }
     int nextround(){
       int data = random(2,6);
-      Round *aux = this->current;
-      Round *round =(Round*)malloc(sizeof(Round));
-      if (round == NULL) return -1; // verifica se tem espaço para ser alocado
-
-      while (aux && aux->next){
-        aux = aux->next;
+      if (tam == 100){
+        return -1;
       }
-      round->data = data;
-      round->next = NULL;
-      aux->next = round;
+      round[tam] = data;
+      tam++;
+    
       return 0; // inserido com sucesso
 
     }
-    int Input(int data){
-      if (this->current->data == data){
-        return 1;
-      } else {
-        return 0;
+    void showgame(){
+      pinMode(REDpin,OUTPUT);
+      pinMode(GREENpin,OUTPUT);
+      pinMode(BLUEpin,OUTPUT);
+      pinMode(YELLOWpin,OUTPUT);
+      for(int x =0; x<tam;x++){
+        int data =round[x];
+        Serial.print(data);
+        //digitalWrite(Buzzer,HIGH);
+        digitalWrite(data,HIGH);
+        delay(200);
+        digitalWrite(data,LOW);
+        //digitalWrite(Buzzer,LOW);
+        delay(200);
       }
     }
-    void showgame(){
-      Round *aux = this->current;
-      while(aux){
-        int data =(int)aux->data;
-        Serial.print(data);
-        aux = aux->next;
-      }
+    void lose(){
+      pinMode(REDpin,OUTPUT);
+      pinMode(BLUEpin,OUTPUT);
+      pinMode(GREENpin,OUTPUT);
+      pinMode(YELLOWpin,OUTPUT);
+        for (int x=0;x<10;x++){
+          digitalWrite(Buzzer,HIGH);
+          digitalWrite(REDpin,HIGH);
+          digitalWrite(GREENpin,HIGH);
+          digitalWrite(BLUEpin,HIGH);
+          digitalWrite(YELLOWpin,HIGH);
+          delay(100);
+          digitalWrite(Buzzer,LOW);
+          digitalWrite(REDpin,LOW);
+          digitalWrite(GREENpin,LOW);
+          digitalWrite(BLUEpin,LOW);
+          digitalWrite(YELLOWpin,LOW);
+          delay(100);
+        }
     }
 };
-
 void setup() {
   randomSeed(analogRead(A0));
-  pinMode(REDpin,OUTPUT);
-  pinMode(YELLOWpin,OUTPUT);
-  pinMode(BLUEpin,OUTPUT);
-  pinMode(GREENpin,OUTPUT);
+  pinMode(BUTTONaction,OUTPUT);
+  //pinMode(Buzzer,OUTPUT);
   Serial.begin(115200);
-
 }
 
 void loop() {
+Game game = Game();
+int data = 0;
+  while (data == 0){
+    delay(1000);
+    game.showgame();
+    data = game.verify();
+    if (data == 0){
+      game.nextround();
+    }
+  }
+  game.lose();
 }
 
