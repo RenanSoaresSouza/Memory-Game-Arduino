@@ -42,7 +42,7 @@ Você precisará ter instalado:
 
 Clone o repositório com
 ~~~
-git clone https://github.com/RenanSoaresSouza/Memory-Game
+git clone https://github.com/RenanSoaresSouza/Memory-Game.git
 ~~~
 Abra a Platform IDE no Visual Studio Code e depois coloque na placa com as devidas configurações.
 
