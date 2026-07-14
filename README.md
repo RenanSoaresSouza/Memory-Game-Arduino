@@ -8,15 +8,11 @@ Jogo da memória desenvolvido utilizando **PlatformIO**, **Arduino** e **C++**.
 
 O jogo gera uma sequência aleatória de luzes que é apresentada ao jogador. Em seguida, o jogador deve repetir exatamente a mesma sequência utilizando os botões correspondentes. A cada rodada, um novo passo é adicionado à sequência, aumentando progressivamente a dificuldade. O jogo continua até que o jogador cometa um erro, momento em que a partida é encerrada e reiniciada.
 
-## Problema
-
-Jogos eletrônicos interativos são uma excelente forma de aplicar conceitos de sistemas embarcados, pois exigem controle de dispositivos de entrada e saída, temporização precisa e gerenciamento de estados. Este projeto implementa uma versão do clássico jogo Simon utilizando Arduino, explorando a integração entre hardware e software em um sistema embarcado de recursos limitados.
-
 ## Decisões de Projeto
 
 A sequência do jogo é armazenada em um vetor de tamanho fixo em vez de uma lista encadeada.
 
-Essa decisão foi tomada devido às limitações de memória do Arduino Uno (2 KB de SRAM). O uso de um vetor elimina alocações dinâmicas durante a execução, reduz a fragmentação de memória e garante um consumo previsível de recursos, característica importante em sistemas embarcados.
+Essa decisão foi tomada devido às limitações de memória do Arduino Uno (2 KB de SRAM). O uso de um vetor elimina alocações dinâmicas durante a execução, reduz a fragmentação de memória e garante um consumo previsível de recursos.
 
 ## Conceitos Aplicados
 
